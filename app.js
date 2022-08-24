@@ -21,11 +21,18 @@ app.get("/api/movies/:id", movieHandlers.getMovieById);
 
 const usersHandlers = require("./usersHandlers");
 
+//GET
 app.get("/api/users", usersHandlers.getUsers);
 app.get("/api/users/:id", usersHandlers.getUsersById);
 
+//POST
 app.post("/api/movies", movieHandlers.postMovie);
 app.post("/api/users", usersHandlers.postUsers);
+
+//PUT
+app.put("/api/movies/:id", movieHandlers.updateMovie);
+app.put("/api/users/:id", usersHandlers.updateUsers);
+
 
 app.listen(port, (err) => {
   if (err) {
