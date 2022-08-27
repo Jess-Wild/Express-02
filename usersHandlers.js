@@ -1,3 +1,4 @@
+const { restart } = require("nodemon");
 const database = require("./database");
 
 const getUsers = (req, res) => {
@@ -70,9 +71,28 @@ const postUsers = (req, res) => {
       });
   };
 
+  const deleteUsers = (req, res) => {
+    const id = parseInt(req.params.id);
+
+    database
+    .query("delete from users where id = ?", [id])
+    .then(([result]) => {
+      if(result.affectedRows === 0){
+        res.status(404).send("Not Found");
+      } else {
+        res.status(204);
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      restart.status(500).send("Error deleting the user");
+    });
+  }
+
 module.exports = {
   getUsers,
   getUsersById,
   postUsers,
   updateUsers,
+  deleteUsers,
 };
