@@ -15,27 +15,39 @@ const welcome = (req, res) => {
 app.get("/", welcome);
 
 const movieHandlers = require("./movieHandlers");
+const usersHandlers = require("./usersHandlers");
+const { hashPassword } = require("./auth.js");
 
+//MOVIES
+
+//GET
 app.get("/api/movies", movieHandlers.getMovies);
 app.get("/api/movies/:id", movieHandlers.getMovieById);
 
-const usersHandlers = require("./usersHandlers");
+//POST
+app.post("/api/movies", movieHandlers.postMovie);
+
+//PUT
+app.put("/api/movies/:id", movieHandlers.updateMovie);
+
+//DELETE
+app.delete("/api/movies/:id", movieHandlers.deleteMovie);
+
+//USERS
 
 //GET
 app.get("/api/users", usersHandlers.getUsers);
 app.get("/api/users/:id", usersHandlers.getUsersById);
 
 //POST
-app.post("/api/movies", movieHandlers.postMovie);
-app.post("/api/users", usersHandlers.postUsers);
+app.post("/api/users", hashPassword, usersHandlers.postUsers);
 
 //PUT
-app.put("/api/movies/:id", movieHandlers.updateMovie);
 app.put("/api/users/:id", usersHandlers.updateUsers);
 
 //DELETE
-app.delete("/api/movies/:id", movieHandlers.deleteMovie);
 app.delete("/api/users/:id", usersHandlers.deleteUsers);
+
 
 app.listen(port, (err) => {
   if (err) {
