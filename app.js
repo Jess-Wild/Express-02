@@ -14,39 +14,43 @@ const welcome = (req, res) => {
 
 app.get("/", welcome);
 
+const { hashPassword, verifyPassword, verifyToken } = require("./auth");
+
 const movieHandlers = require("./movieHandlers");
 const usersHandlers = require("./usersHandlers");
-const { hashPassword } = require("./auth.js");
 
-//MOVIES
+//PUBLIC
 
 //GET
 app.get("/api/movies", movieHandlers.getMovies);
 app.get("/api/movies/:id", movieHandlers.getMovieById);
+
+app.get("/api/users", usersHandlers.getUsers);
+app.get("/api/users/:id", usersHandlers.getUsersById);
+
+//POST
+
+app.post("/api/users", hashPassword, usersHandlers.postUsers);
+app.post(
+  "/api/login",
+  usersHandlers.getUserByEmailWithPasswordAndPassToNext,
+  verifyPassword
+);
+
+//PROTECT
+app.use(verifyToken);
 
 //POST
 app.post("/api/movies", movieHandlers.postMovie);
 
 //PUT
 app.put("/api/movies/:id", movieHandlers.updateMovie);
-
-//DELETE
-app.delete("/api/movies/:id", movieHandlers.deleteMovie);
-
-//USERS
-
-//GET
-app.get("/api/users", usersHandlers.getUsers);
-app.get("/api/users/:id", usersHandlers.getUsersById);
-
-//POST
-app.post("/api/users", hashPassword, usersHandlers.postUsers);
-
-//PUT
 app.put("/api/users/:id", usersHandlers.updateUsers);
 
 //DELETE
+app.delete("/api/movies/:id", movieHandlers.deleteMovie);
 app.delete("/api/users/:id", usersHandlers.deleteUsers);
+
 
 
 app.listen(port, (err) => {
@@ -56,3 +60,4 @@ app.listen(port, (err) => {
     console.log(`Server is listening on ${port}`);
   }
 });
+
